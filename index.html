@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla Periódica Interactiva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+
+        #tabla-periodica {
+            display: grid;
+            grid-template-columns: repeat(18, 50px);
+            grid-gap: 5px;
+            margin: 20px auto;
+            padding: 10px;
+            max-width: 100%;
+        }
+
+        .elemento {
+            width: 50px;
+            height: 50px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .elemento:hover {
+            background-color: #ffeb3b;
+        }
+
+        .elemento-info {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        .mostrar-info {
+            color: #4CAF50;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Colores de los grupos */
+        .metales {
+            background-color: #f9d5a7;
+        }
+
+        .no-metales {
+            background-color: #e1f7d5;
+        }
+
+        .gases {
+            background-color: #c1e1f4;
+        }
+
+        /* Estilo para los elementos especiales (gases nobles, lantánidos, actínidos) */
+        .gas-noble {
+            background-color: #ffe0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tabla Periódica Interactiva</h1>
+    
+    <div id="tabla-periodica">
+        <!-- Los elementos de la tabla periódica se agregarán aquí mediante JavaScript -->
+    </div>
+
+    <div class="elemento-info" id="infoElemento">
+        <h3>Información del Elemento</h3>
+        <p id="infoTexto"></p>
+        <button onclick="cerrarInfo()">Cerrar</button>
+    </div>
+
+    <script>
+        // Información básica de los elementos de la tabla periódica
+        const elementos = [
+            { nombre: "Hidrógeno", simbolo: "H", grupo: "No metales", numero: 1, detalle: "Es el elemento más ligero del universo." },
+            { nombre: "Helio", simbolo: "He", grupo: "Gases nobles", numero: 2, detalle: "Se utiliza en globos de helio." },
+            { nombre: "Litio", simbolo: "Li", grupo: "Metales", numero: 3, detalle: "Es un metal alcalino usado en baterías." },
+            { nombre: "Berilio", simbolo: "Be", grupo: "Metales", numero: 4, detalle: "Usado en aleaciones de alta resistencia." },
+            { nombre: "Boro", simbolo: "B", grupo: "Metaloides", numero: 5, detalle: "Usado en la fabricación de vidrios y cerámicas." },
+            { nombre: "Carbono", simbolo: "C", grupo: "No metales", numero: 6, detalle: "Es la base de toda la vida en la Tierra." },
+            { nombre: "Nitrógeno", simbolo: "N", grupo: "No metales", numero: 7, detalle: "Es el gas más abundante en la atmósfera terrestre." },
+            { nombre: "Oxígeno", simbolo: "O", grupo: "No metales", numero: 8, detalle: "Esencial para la respiración de seres vivos." },
+            { nombre: "Flúor", simbolo: "F", grupo: "No metales", numero: 9, detalle: "Se usa en pastas dentales." },
+            { nombre: "Neón", simbolo: "Ne", grupo: "Gases nobles", numero: 10, detalle: "Es un gas noble utilizado en luces de neón." },
+            // Añadir más elementos según sea necesario
+        ];
+
+        const tabla = document.getElementById('tabla-periodica');
+
+        // Función para mostrar los elementos en la tabla
+        function crearTabla() {
+            elementos.forEach((elem, index) => {
+                const div = document.createElement('div');
+                div.classList.add('elemento');
+                div.classList.add(elem.grupo.toLowerCase().replace(" ", "-"));
+                div.innerHTML = `${elem.simbolo}<br>${elem.numero}`;
+
+                // Evento para mostrar la información cuando se hace clic
+                div.onclick = () => mostrarInfo(elem);
+
+                tabla.appendChild(div);
+            });
+        }
+
+        // Función para mostrar la información del elemento
+        function mostrarInfo(elemento) {
+            const infoElemento = document.getElementById('infoElemento');
+            const infoTexto = document.getElementById('infoTexto');
+            infoElemento.style.display = 'block';
+            infoTexto.innerHTML = `<strong>${elemento.nombre}</strong> (${elemento.simbolo}) - Número Atómico: ${elemento.numero}<br><br>${elemento.detalle}`;
+        }
+
+        // Función para cerrar la información
+        function cerrarInfo() {
+            const infoElemento = document.getElementById('infoElemento');
+            infoElemento.style.display = 'none';
+        }
+
+        // Cargar la tabla al inicio
+        crearTabla();
+    </script>
+</body>
+</html>
