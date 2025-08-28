@@ -1,38 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tabla Periódica Interactiva</title>
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#4CAF50">
+  <meta name="theme-color" content="#4CAF50">
 
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
-    h1 { background-color: #4CAF50; color: white; padding: 20px; margin: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
     #tabla-periodica {
       display: grid;
-      grid-template-columns: repeat(18, 50px);
-      grid-gap: 5px;
+      grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+      gap: 5px;
       margin: 20px auto;
       padding: 10px;
       max-width: 100%;
     }
+
     .elemento {
-      width: 50px; height: 50px;
+      aspect-ratio: 1 / 1; /* siempre cuadrado */
       background-color: #f4f4f4;
       border: 1px solid #ddd;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      cursor: pointer; font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: clamp(8px, 2vw, 14px); /* texto adaptable */
       transition: background-color 0.3s ease;
+      border-radius: 4px;
     }
-    .elemento:hover { background-color: #ffeb3b; }
+
+    .elemento:hover {
+      background-color: #ffeb3b;
+    }
+
     .elemento-info {
-      display: none; margin-top: 20px; padding: 10px;
-      background-color: #f1f1f1; border-radius: 5px;
+      display: none;
+      margin: 20px auto;
+      padding: 10px;
+      max-width: 400px;
+      background-color: #f1f1f1;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
+
+    .elemento-info button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
     /* Colores */
     .no-metales { background: #e1f7d5; }
     .gases-nobles { background: #ffe0f0; }
@@ -43,11 +80,18 @@
     .halogenos { background: #fad7a0; }
     .lantanidos { background: #c1e1f4; }
     .actinidos { background: #d7bde2; }
+
+    /* Ajustes móviles */
+    @media (max-width: 600px) {
+      h1 { font-size: 1.2rem; padding: 15px; }
+      .elemento { font-size: 10px; }
+    }
   </style>
 </head>
 <body>
   <h1>Tabla Periódica Interactiva</h1>
   <div id="tabla-periodica"></div>
+
   <div class="elemento-info" id="infoElemento">
     <h3>Información del Elemento</h3>
     <p id="infoTexto"></p>
@@ -203,6 +247,5 @@
 
     crearTabla();
   </script>
-  
 </body>
 </html>
