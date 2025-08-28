@@ -1,145 +1,203 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabla Periódica Interactiva</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            margin: 0;
-        }
-
-        #tabla-periodica {
-            display: grid;
-            grid-template-columns: repeat(18, 50px);
-            grid-gap: 5px;
-            margin: 20px auto;
-            padding: 10px;
-            max-width: 100%;
-        }
-
-        .elemento {
-            width: 50px;
-            height: 50px;
-            background-color: #f4f4f4;
-            border: 1px solid #ddd;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background-color 0.3s ease;
-        }
-
-        .elemento:hover {
-            background-color: #ffeb3b;
-        }
-
-        .elemento-info {
-            display: none;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 5px;
-        }
-
-        .mostrar-info {
-            color: #4CAF50;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        /* Colores de los grupos */
-        .metales {
-            background-color: #f9d5a7;
-        }
-
-        .no-metales {
-            background-color: #e1f7d5;
-        }
-
-        .gases {
-            background-color: #c1e1f4;
-        }
-
-        /* Estilo para los elementos especiales (gases nobles, lantánidos, actínidos) */
-        .gas-noble {
-            background-color: #ffe0f0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla Periódica Interactiva</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
+    h1 { background-color: #4CAF50; color: white; padding: 20px; margin: 0; }
+    #tabla-periodica {
+      display: grid;
+      grid-template-columns: repeat(18, 50px);
+      grid-gap: 5px;
+      margin: 20px auto;
+      padding: 10px;
+      max-width: 100%;
+    }
+    .elemento {
+      width: 50px; height: 50px;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      cursor: pointer; font-size: 12px;
+      transition: background-color 0.3s ease;
+    }
+    .elemento:hover { background-color: #ffeb3b; }
+    .elemento-info {
+      display: none; margin-top: 20px; padding: 10px;
+      background-color: #f1f1f1; border-radius: 5px;
+    }
+    /* Colores */
+    .no-metales { background: #e1f7d5; }
+    .gases-nobles { background: #ffe0f0; }
+    .metales { background: #f9d5a7; }
+    .metales-transicion { background: #f7dc6f; }
+    .otros-metales { background: #aed6f1; }
+    .metaloides { background: #f5d0f5; }
+    .halogenos { background: #fad7a0; }
+    .lantanidos { background: #c1e1f4; }
+    .actinidos { background: #d7bde2; }
+  </style>
 </head>
 <body>
-    <h1>Tabla Periódica Interactiva</h1>
-    
-    <div id="tabla-periodica">
-        <!-- Los elementos de la tabla periódica se agregarán aquí mediante JavaScript -->
-    </div>
+  <h1>Tabla Periódica Interactiva</h1>
+  <div id="tabla-periodica"></div>
+  <div class="elemento-info" id="infoElemento">
+    <h3>Información del Elemento</h3>
+    <p id="infoTexto"></p>
+    <button onclick="cerrarInfo()">Cerrar</button>
+  </div>
 
-    <div class="elemento-info" id="infoElemento">
-        <h3>Información del Elemento</h3>
-        <p id="infoTexto"></p>
-        <button onclick="cerrarInfo()">Cerrar</button>
-    </div>
+  <script>
+    const elementos = [
+      {numero:1, simbolo:"H", nombre:"Hidrógeno", grupo:"no-metales"},
+      {numero:2, simbolo:"He", nombre:"Helio", grupo:"gases-nobles"},
+      {numero:3, simbolo:"Li", nombre:"Litio", grupo:"metales"},
+      {numero:4, simbolo:"Be", nombre:"Berilio", grupo:"metales"},
+      {numero:5, simbolo:"B", nombre:"Boro", grupo:"metaloides"},
+      {numero:6, simbolo:"C", nombre:"Carbono", grupo:"no-metales"},
+      {numero:7, simbolo:"N", nombre:"Nitrógeno", grupo:"no-metales"},
+      {numero:8, simbolo:"O", nombre:"Oxígeno", grupo:"no-metales"},
+      {numero:9, simbolo:"F", nombre:"Flúor", grupo:"halogenos"},
+      {numero:10, simbolo:"Ne", nombre:"Neón", grupo:"gases-nobles"},
+      {numero:11, simbolo:"Na", nombre:"Sodio", grupo:"metales"},
+      {numero:12, simbolo:"Mg", nombre:"Magnesio", grupo:"metales"},
+      {numero:13, simbolo:"Al", nombre:"Aluminio", grupo:"otros-metales"},
+      {numero:14, simbolo:"Si", nombre:"Silicio", grupo:"metaloides"},
+      {numero:15, simbolo:"P", nombre:"Fósforo", grupo:"no-metales"},
+      {numero:16, simbolo:"S", nombre:"Azufre", grupo:"no-metales"},
+      {numero:17, simbolo:"Cl", nombre:"Cloro", grupo:"halogenos"},
+      {numero:18, simbolo:"Ar", nombre:"Argón", grupo:"gases-nobles"},
+      {numero:19, simbolo:"K", nombre:"Potasio", grupo:"metales"},
+      {numero:20, simbolo:"Ca", nombre:"Calcio", grupo:"metales"},
+      {numero:21, simbolo:"Sc", nombre:"Escandio", grupo:"metales-transicion"},
+      {numero:22, simbolo:"Ti", nombre:"Titanio", grupo:"metales-transicion"},
+      {numero:23, simbolo:"V", nombre:"Vanadio", grupo:"metales-transicion"},
+      {numero:24, simbolo:"Cr", nombre:"Cromo", grupo:"metales-transicion"},
+      {numero:25, simbolo:"Mn", nombre:"Manganeso", grupo:"metales-transicion"},
+      {numero:26, simbolo:"Fe", nombre:"Hierro", grupo:"metales-transicion"},
+      {numero:27, simbolo:"Co", nombre:"Cobalto", grupo:"metales-transicion"},
+      {numero:28, simbolo:"Ni", nombre:"Níquel", grupo:"metales-transicion"},
+      {numero:29, simbolo:"Cu", nombre:"Cobre", grupo:"metales-transicion"},
+      {numero:30, simbolo:"Zn", nombre:"Zinc", grupo:"metales-transicion"},
+      {numero:31, simbolo:"Ga", nombre:"Galio", grupo:"otros-metales"},
+      {numero:32, simbolo:"Ge", nombre:"Germanio", grupo:"metaloides"},
+      {numero:33, simbolo:"As", nombre:"Arsénico", grupo:"metaloides"},
+      {numero:34, simbolo:"Se", nombre:"Selenio", grupo:"no-metales"},
+      {numero:35, simbolo:"Br", nombre:"Bromo", grupo:"halogenos"},
+      {numero:36, simbolo:"Kr", nombre:"Kriptón", grupo:"gases-nobles"},
+      {numero:37, simbolo:"Rb", nombre:"Rubidio", grupo:"metales"},
+      {numero:38, simbolo:"Sr", nombre:"Estroncio", grupo:"metales"},
+      {numero:39, simbolo:"Y", nombre:"Itrio", grupo:"metales-transicion"},
+      {numero:40, simbolo:"Zr", nombre:"Circonio", grupo:"metales-transicion"},
+      {numero:41, simbolo:"Nb", nombre:"Niobio", grupo:"metales-transicion"},
+      {numero:42, simbolo:"Mo", nombre:"Molibdeno", grupo:"metales-transicion"},
+      {numero:43, simbolo:"Tc", nombre:"Tecnecio", grupo:"metales-transicion"},
+      {numero:44, simbolo:"Ru", nombre:"Rutenio", grupo:"metales-transicion"},
+      {numero:45, simbolo:"Rh", nombre:"Rodio", grupo:"metales-transicion"},
+      {numero:46, simbolo:"Pd", nombre:"Paladio", grupo:"metales-transicion"},
+      {numero:47, simbolo:"Ag", nombre:"Plata", grupo:"metales-transicion"},
+      {numero:48, simbolo:"Cd", nombre:"Cadmio", grupo:"metales-transicion"},
+      {numero:49, simbolo:"In", nombre:"Indio", grupo:"otros-metales"},
+      {numero:50, simbolo:"Sn", nombre:"Estaño", grupo:"otros-metales"},
+      {numero:51, simbolo:"Sb", nombre:"Antimonio", grupo:"metaloides"},
+      {numero:52, simbolo:"Te", nombre:"Telurio", grupo:"metaloides"},
+      {numero:53, simbolo:"I", nombre:"Yodo", grupo:"halogenos"},
+      {numero:54, simbolo:"Xe", nombre:"Xenón", grupo:"gases-nobles"},
+      {numero:55, simbolo:"Cs", nombre:"Cesio", grupo:"metales"},
+      {numero:56, simbolo:"Ba", nombre:"Bario", grupo:"metales"},
+      {numero:57, simbolo:"La", nombre:"Lantano", grupo:"lantanidos"},
+      {numero:58, simbolo:"Ce", nombre:"Cerio", grupo:"lantanidos"},
+      {numero:59, simbolo:"Pr", nombre:"Praseodimio", grupo:"lantanidos"},
+      {numero:60, simbolo:"Nd", nombre:"Neodimio", grupo:"lantanidos"},
+      {numero:61, simbolo:"Pm", nombre:"Prometio", grupo:"lantanidos"},
+      {numero:62, simbolo:"Sm", nombre:"Samario", grupo:"lantanidos"},
+      {numero:63, simbolo:"Eu", nombre:"Europio", grupo:"lantanidos"},
+      {numero:64, simbolo:"Gd", nombre:"Gadolinio", grupo:"lantanidos"},
+      {numero:65, simbolo:"Tb", nombre:"Terbio", grupo:"lantanidos"},
+      {numero:66, simbolo:"Dy", nombre:"Disprosio", grupo:"lantanidos"},
+      {numero:67, simbolo:"Ho", nombre:"Holmio", grupo:"lantanidos"},
+      {numero:68, simbolo:"Er", nombre:"Erbio", grupo:"lantanidos"},
+      {numero:69, simbolo:"Tm", nombre:"Tulio", grupo:"lantanidos"},
+      {numero:70, simbolo:"Yb", nombre:"Iterbio", grupo:"lantanidos"},
+      {numero:71, simbolo:"Lu", nombre:"Lutecio", grupo:"lantanidos"},
+      {numero:72, simbolo:"Hf", nombre:"Hafnio", grupo:"metales-transicion"},
+      {numero:73, simbolo:"Ta", nombre:"Tantalio", grupo:"metales-transicion"},
+      {numero:74, simbolo:"W", nombre:"Wolframio", grupo:"metales-transicion"},
+      {numero:75, simbolo:"Re", nombre:"Renio", grupo:"metales-transicion"},
+      {numero:76, simbolo:"Os", nombre:"Osmio", grupo:"metales-transicion"},
+      {numero:77, simbolo:"Ir", nombre:"Iridio", grupo:"metales-transicion"},
+      {numero:78, simbolo:"Pt", nombre:"Platino", grupo:"metales-transicion"},
+      {numero:79, simbolo:"Au", nombre:"Oro", grupo:"metales-transicion"},
+      {numero:80, simbolo:"Hg", nombre:"Mercurio", grupo:"metales-transicion"},
+      {numero:81, simbolo:"Tl", nombre:"Talio", grupo:"otros-metales"},
+      {numero:82, simbolo:"Pb", nombre:"Plomo", grupo:"otros-metales"},
+      {numero:83, simbolo:"Bi", nombre:"Bismuto", grupo:"otros-metales"},
+      {numero:84, simbolo:"Po", nombre:"Polonio", grupo:"metaloides"},
+      {numero:85, simbolo:"At", nombre:"Astato", grupo:"halogenos"},
+      {numero:86, simbolo:"Rn", nombre:"Radón", grupo:"gases-nobles"},
+      {numero:87, simbolo:"Fr", nombre:"Francio", grupo:"metales"},
+      {numero:88, simbolo:"Ra", nombre:"Radio", grupo:"metales"},
+      {numero:89, simbolo:"Ac", nombre:"Actinio", grupo:"actinidos"},
+      {numero:90, simbolo:"Th", nombre:"Torio", grupo:"actinidos"},
+      {numero:91, simbolo:"Pa", nombre:"Protactinio", grupo:"actinidos"},
+      {numero:92, simbolo:"U", nombre:"Uranio", grupo:"actinidos"},
+      {numero:93, simbolo:"Np", nombre:"Neptunio", grupo:"actinidos"},
+      {numero:94, simbolo:"Pu", nombre:"Plutonio", grupo:"actinidos"},
+      {numero:95, simbolo:"Am", nombre:"Americio", grupo:"actinidos"},
+      {numero:96, simbolo:"Cm", nombre:"Curio", grupo:"actinidos"},
+      {numero:97, simbolo:"Bk", nombre:"Berkelio", grupo:"actinidos"},
+      {numero:98, simbolo:"Cf", nombre:"Californio", grupo:"actinidos"},
+      {numero:99, simbolo:"Es", nombre:"Einsteinio", grupo:"actinidos"},
+      {numero:100, simbolo:"Fm", nombre:"Fermio", grupo:"actinidos"},
+      {numero:101, simbolo:"Md", nombre:"Mendelevio", grupo:"actinidos"},
+      {numero:102, simbolo:"No", nombre:"Nobelio", grupo:"actinidos"},
+      {numero:103, simbolo:"Lr", nombre:"Lawrencio", grupo:"actinidos"},
+      {numero:104, simbolo:"Rf", nombre:"Rutherfordio", grupo:"metales-transicion"},
+      {numero:105, simbolo:"Db", nombre:"Dubnio", grupo:"metales-transicion"},
+      {numero:106, simbolo:"Sg", nombre:"Seaborgio", grupo:"metales-transicion"},
+      {numero:107, simbolo:"Bh", nombre:"Bohrio", grupo:"metales-transicion"},
+      {numero:108, simbolo:"Hs", nombre:"Hassio", grupo:"metales-transicion"},
+      {numero:109, simbolo:"Mt", nombre:"Meitnerio", grupo:"metales-transicion"},
+      {numero:110, simbolo:"Ds", nombre:"Darmstadtio", grupo:"metales-transicion"},
+      {numero:111, simbolo:"Rg", nombre:"Roentgenio", grupo:"metales-transicion"},
+      {numero:112, simbolo:"Cn", nombre:"Copernicio", grupo:"metales-transicion"},
+      {numero:113, simbolo:"Nh", nombre:"Nihonio", grupo:"otros-metales"},
+      {numero:114, simbolo:"Fl", nombre:"Flerovio", grupo:"otros-metales"},
+      {numero:115, simbolo:"Mc", nombre:"Moscovio", grupo:"otros-metales"},
+      {numero:116, simbolo:"Lv", nombre:"Livermorio", grupo:"otros-metales"},
+      {numero:117, simbolo:"Ts", nombre:"Tenesino", grupo:"halogenos"},
+      {numero:118, simbolo:"Og", nombre:"Oganesón", grupo:"gases-nobles"}
+    ];
 
-    <script>
-        // Información básica de los elementos de la tabla periódica
-        const elementos = [
-            { nombre: "Hidrógeno", simbolo: "H", grupo: "No metales", numero: 1, detalle: "Es el elemento más ligero del universo." },
-            { nombre: "Helio", simbolo: "He", grupo: "Gases nobles", numero: 2, detalle: "Se utiliza en globos de helio." },
-            { nombre: "Litio", simbolo: "Li", grupo: "Metales", numero: 3, detalle: "Es un metal alcalino usado en baterías." },
-            { nombre: "Berilio", simbolo: "Be", grupo: "Metales", numero: 4, detalle: "Usado en aleaciones de alta resistencia." },
-            { nombre: "Boro", simbolo: "B", grupo: "Metaloides", numero: 5, detalle: "Usado en la fabricación de vidrios y cerámicas." },
-            { nombre: "Carbono", simbolo: "C", grupo: "No metales", numero: 6, detalle: "Es la base de toda la vida en la Tierra." },
-            { nombre: "Nitrógeno", simbolo: "N", grupo: "No metales", numero: 7, detalle: "Es el gas más abundante en la atmósfera terrestre." },
-            { nombre: "Oxígeno", simbolo: "O", grupo: "No metales", numero: 8, detalle: "Esencial para la respiración de seres vivos." },
-            { nombre: "Flúor", simbolo: "F", grupo: "No metales", numero: 9, detalle: "Se usa en pastas dentales." },
-            { nombre: "Neón", simbolo: "Ne", grupo: "Gases nobles", numero: 10, detalle: "Es un gas noble utilizado en luces de neón." },
-            // Añadir más elementos según sea necesario
-        ];
+    const tabla = document.getElementById('tabla-periodica');
 
-        const tabla = document.getElementById('tabla-periodica');
+    function crearTabla() {
+      elementos.forEach((elem) => {
+        const div = document.createElement('div');
+        div.classList.add('elemento');
+        if (elem.grupo) div.classList.add(elem.grupo);
+        div.innerHTML = `<strong>${elem.simbolo}</strong><br><small>${elem.numero}</small>`;
+        div.title = elem.nombre;
+        div.onclick = () => mostrarInfo(elem);
+        tabla.appendChild(div);
+      });
+    }
 
-        // Función para mostrar los elementos en la tabla
-        function crearTabla() {
-            elementos.forEach((elem, index) => {
-                const div = document.createElement('div');
-                div.classList.add('elemento');
-                div.classList.add(elem.grupo.toLowerCase().replace(" ", "-"));
-                div.innerHTML = `${elem.simbolo}<br>${elem.numero}`;
+    function mostrarInfo(elemento) {
+      const infoElemento = document.getElementById('infoElemento');
+      const infoTexto = document.getElementById('infoTexto');
+      infoElemento.style.display = 'block';
+      infoTexto.innerHTML = `<strong>${elemento.nombre}</strong> (${elemento.simbolo})<br>Nº Atómico: ${elemento.numero}`;
+    }
 
-                // Evento para mostrar la información cuando se hace clic
-                div.onclick = () => mostrarInfo(elem);
+    function cerrarInfo() {
+      document.getElementById('infoElemento').style.display = 'none';
+    }
 
-                tabla.appendChild(div);
-            });
-        }
-
-        // Función para mostrar la información del elemento
-        function mostrarInfo(elemento) {
-            const infoElemento = document.getElementById('infoElemento');
-            const infoTexto = document.getElementById('infoTexto');
-            infoElemento.style.display = 'block';
-            infoTexto.innerHTML = `<strong>${elemento.nombre}</strong> (${elemento.simbolo}) - Número Atómico: ${elemento.numero}<br><br>${elemento.detalle}`;
-        }
-
-        // Función para cerrar la información
-        function cerrarInfo() {
-            const infoElemento = document.getElementById('infoElemento');
-            infoElemento.style.display = 'none';
-        }
-
-        // Cargar la tabla al inicio
-        crearTabla();
-    </script>
+    crearTabla();
+  </script>
 </body>
 </html>
